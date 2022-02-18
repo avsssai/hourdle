@@ -12,7 +12,7 @@ const app = express();
 const port = 8000;
 app.use(cors());
 let usedWords = [];
-let newWord;
+let newWord = random(wordsList);
 nodeCron.schedule("0 * * * *", function () {
 	newWord = random(wordsList);
 	if (usedWords.includes(newWord)) {

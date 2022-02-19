@@ -2,101 +2,49 @@ import React from "react";
 import styled from "styled-components";
 import { Delete } from "react-feather";
 
-const KeyBoard = ({ enterValue, deleteEntry, enterClick }) => {
+const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
 	const keyClick = (e) => {
 		enterValue(e.target.value);
 	};
 
+	const layout = [
+		["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+		["a", "s", "d", "f", "g", "h", "j", "k", "l"],
+		["z", "x", "c", "v", "b", "n", "m"],
+	];
+	const keyState = (state, key) => {
+		let keyArr = state[key];
+		if (!keyArr) return null;
+		if (keyArr.includes("correct")) return "correct";
+		if (keyArr.includes("present")) return "present";
+		if (keyArr.includes("absent")) return "absent";
+	};
 	return (
 		<KeyBoardWrapper>
 			<Row>
-				<Button onClick={keyClick} value='q'>
-					q
-				</Button>
-				<Button onClick={keyClick} value='w'>
-					w
-				</Button>
-				<Button onClick={keyClick} value='e'>
-					e
-				</Button>
-				<Button onClick={keyClick} value='r'>
-					r
-				</Button>
-				<Button onClick={keyClick} value='t'>
-					t
-				</Button>
-				<Button onClick={keyClick} value='y'>
-					y
-				</Button>
-				<Button onClick={keyClick} value='u'>
-					u
-				</Button>
-				<Button onClick={keyClick} value='i'>
-					i
-				</Button>
-				<Button onClick={keyClick} value='o'>
-					o
-				</Button>
-				<Button onClick={keyClick} value='p'>
-					p
-				</Button>
+				{layout[0].map((el) => (
+					<Button onClick={keyClick} key={el} value={el} keyState={keyState(keyboardState, el)}>
+						{el}
+					</Button>
+				))}
 			</Row>
 			<Row>
 				<Spacer />
-				<Button onClick={keyClick} value='a'>
-					a
-				</Button>
-				<Button onClick={keyClick} value='s'>
-					s
-				</Button>
-				<Button onClick={keyClick} value='d'>
-					d
-				</Button>
-				<Button onClick={keyClick} value='f'>
-					f
-				</Button>
-				<Button onClick={keyClick} value='g'>
-					g
-				</Button>
-				<Button onClick={keyClick} value='h'>
-					h
-				</Button>
-				<Button onClick={keyClick} value='j'>
-					j
-				</Button>
-				<Button onClick={keyClick} value='k'>
-					k
-				</Button>
-				<Button onClick={keyClick} value='l'>
-					l
-				</Button>
+
+				{layout[1].map((el) => (
+					<Button onClick={keyClick} key={el} value={el} keyState={keyState(keyboardState, el)}>
+						{el}
+					</Button>
+				))}
 				<Spacer />
 			</Row>
 			<Row>
-				<Button onClick={keyClick} onClick={() => enterClick()}>
-					Enter
-				</Button>
-				<Button onClick={keyClick} value='z'>
-					z
-				</Button>
-				<Button onClick={keyClick} value='x'>
-					x
-				</Button>
-				<Button onClick={keyClick} value='c'>
-					c
-				</Button>
-				<Button onClick={keyClick} value='v'>
-					v
-				</Button>
-				<Button onClick={keyClick} value='b'>
-					b
-				</Button>
-				<Button onClick={keyClick} value='n'>
-					n
-				</Button>
-				<Button onClick={keyClick} value='m'>
-					m
-				</Button>
+				<Button onClick={() => enterClick()}>Enter</Button>
+				{layout[2].map((el) => (
+					<Button onClick={keyClick} key={el} value={el} keyState={keyState(keyboardState, el)}>
+						{el}
+					</Button>
+				))}
 				<Button onClick={() => deleteEntry()}>
 					<Delete color='black' size={24} />
 				</Button>
@@ -124,7 +72,15 @@ const Button = styled.button`
 	flex: 1;
 	align-items: center;
 	justify-content: center;
-	background: #d3d6da;
+	background: ${(p) =>
+		p.keyState === "correct"
+			? "green"
+			: p.keyState === "present"
+			? "yellow"
+			: p.keyState === "absent"
+			? "gray"
+			: "#d3d6da"};
+	// background: #d3d6da;
 	border: none;
 	border-radius: 5px;
 	text-transform: uppercase;

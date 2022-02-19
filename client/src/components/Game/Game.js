@@ -7,15 +7,31 @@ import KeyBoard from "../KeyBoard/KeyBoard";
 const Game = ({ word }) => {
 	const [boardState, setBoardState] = useState(["", "", "", "", "", ""]);
 	const [rowIndex, setRowIndex] = useState(0);
-	const [evaluations, setEvaluations] = useState(Array(6).fill(null));
+	const [evaluations, setEvaluations] = useState(Array(6).fill([]));
+	const [keyboardState, setKeyBoardState] = useState({});
+
+	function keyboardStatus() {
+		let letters = boardState[rowIndex].slice();
+		let evaluation = evaluate(boardState[rowIndex], word);
+		const res = { ...keyboardState };
+		for (let i = 0; i < letters.length; i++) {
+			if (!(letters[i] in res)) {
+				res[letters[i]] = [];
+			}
+			res[letters[i]] = [...res[letters[i]], evaluation[i]];
+		}
+		return res;
+	}
 
 	const enterClick = () => {
 		console.log(evaluate(boardState[rowIndex], word));
+		console.log("BOARD STATE", boardState);
 		let currentEvaluation = evaluate(boardState[rowIndex], word);
 		let evaluationArr = [...evaluations];
 		evaluationArr[rowIndex] = currentEvaluation;
 		setEvaluations(evaluationArr);
 		setRowIndex(rowIndex + 1);
+		setKeyBoardState(keyboardStatus());
 	};
 
 	const enterValue = (val) => {
@@ -39,9 +55,16 @@ const Game = ({ word }) => {
 	return (
 		<GameWrapper>
 			<BoardWrapper>
-				<GameBoard word={word} boardState={boardState} />
+				<GameBoard word={word} boardState={boardState} evaluations={evaluations} />
 			</BoardWrapper>
-			<KeyBoard enterValue={enterValue} deleteEntry={deleteEntry} enterClick={enterClick} />
+			<KeyBoard
+				enterValue={enterValue}
+				deleteEntry={deleteEntry}
+				enterClick={enterClick}
+				boardState={boardState}
+				evaluations={evaluations}
+				keyboardState={keyboardState}
+			/>
 		</GameWrapper>
 	);
 };

@@ -4,7 +4,7 @@ function useData() {
 	let [lastPlayedTS, setlastPlayedTS] = useState(JSON.parse(localStorage.getItem("lastPlayedTS")) || null);
 	let [lastCompletedTS, setlastCompletedTS] = useState(JSON.parse(localStorage.getItem("lastCompletedTS")) || null);
 
-	const [word, setWord] = useState(JSON.parse(localStorage.getItem("cron-test")) || "shiva");
+	const [word, setWord] = useState(JSON.parse(localStorage.getItem("cron-test")));
 
 	function timeToNextMin() {
 		// let timeNow = new Date();

@@ -1,5 +1,5 @@
 import "./App.css";
-import { useRandomWord } from "./hooks/useRandomWord";
+// import { useRandomWord } from "./hooks/useRandomWord";
 import useData from "./hooks/useData";
 import Header from "./components/Header/Header";
 import Game from "./components/Game/Game";

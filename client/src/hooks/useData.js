@@ -1,20 +1,11 @@
 import { useEffect, useState } from "react";
-import moment from "moment";
+import { msToNextHour } from "../utils/helpers";
+
 function useData() {
 	let [lastPlayedTS, setlastPlayedTS] = useState(JSON.parse(localStorage.getItem("lastPlayedTS")) || null);
 	let [lastCompletedTS, setlastCompletedTS] = useState(JSON.parse(localStorage.getItem("lastCompletedTS")) || null);
 
-	const [word, setWord] = useState(JSON.parse(localStorage.getItem("cron-test")));
-
-	function timeToNextMin() {
-		// let timeNow = new Date();
-		// return 62000 - (timeNow.getSeconds() * 1000 + timeNow.getMilliseconds());
-		return Math.abs(moment().diff(moment().endOf("minute").add(100, "ms"), "ms"));
-	}
-
-	function msToNextHour() {
-		return Math.abs(moment().diff(moment().endOf("hour").add(2000, "ms"), "ms"));
-	}
+	const [word, setWord] = useState(JSON.parse(localStorage.getItem("solution")));
 
 	const [timeTill, setTimeTill] = useState(msToNextHour());
 
@@ -42,7 +33,7 @@ function useData() {
 		return () => clearInterval(interval);
 	}, [timeTill]);
 
-	return [word];
+	return [word, timeTill];
 }
 
 export default useData;

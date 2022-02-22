@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { evaluate } from "../../utils/helpers";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { isWordInList, evaluate, msToNextHour, toastMessage } from "../../utils/helpers";
 import GameBoard from "../GameBoard/GameBoard";
 import KeyBoard from "../KeyBoard/KeyBoard";
 
@@ -23,15 +25,40 @@ const Game = ({ word }) => {
 		return res;
 	}
 
+	const correctGuessLogic = () => {
+		//1.  calculate the timer to next wordle - display clock
+		//2. activate the modal - send modal the stats till now and time to next game
+		//3. make buttons inactive
+		toast(toastMessage(rowIndex));
+		localStorage.setItem("lastCompletedTS", msToNextHour());
+	};
+
 	const enterClick = () => {
 		console.log(evaluate(boardState[rowIndex], word));
 		console.log("BOARD STATE", boardState);
+		const currentWord = boardState[rowIndex];
+		if (currentWord.length < 5) return;
+
+		if (!isWordInList(currentWord)) {
+			toast("Not in word list");
+			console.log("dne");
+			return;
+		}
+		// console.log(isWordInList(currentWord));
 		let currentEvaluation = evaluate(boardState[rowIndex], word);
 		let evaluationArr = [...evaluations];
 		evaluationArr[rowIndex] = currentEvaluation;
 		setEvaluations(evaluationArr);
 		setRowIndex(rowIndex + 1);
 		setKeyBoardState(keyboardStatus());
+
+		if (currentWord === word) {
+			correctGuessLogic();
+		}
+
+		if (rowIndex > 5) {
+			toast(toastMessage[rowIndex]);
+		}
 	};
 
 	const enterValue = (val) => {
@@ -64,6 +91,18 @@ const Game = ({ word }) => {
 				boardState={boardState}
 				evaluations={evaluations}
 				keyboardState={keyboardState}
+			/>
+			<ToastContainer
+				position='top-center'
+				autoClose={2000}
+				hideProgressBar
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover={false}
+				theme='dark'
 			/>
 		</GameWrapper>
 	);

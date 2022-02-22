@@ -1,4 +1,6 @@
 import { words } from "../assets/words";
+import { validWords } from "../assets/validWords";
+import moment from "moment";
 
 function getRandomWord(words) {
 	let wordSelected = words[Math.floor(Math.random() * words.length + 1)];
@@ -42,4 +44,43 @@ const evaluate = (currentWord, correctWord) => {
 	return arr.map((letter, index) => status(letter, index));
 };
 
-export { getRandomWord, timeout, evaluate };
+function timeToNextMin() {
+	// let timeNow = new Date();
+	// return 62000 - (timeNow.getSeconds() * 1000 + timeNow.getMilliseconds());
+	return Math.abs(moment().diff(moment().endOf("minute").add(100, "ms"), "ms"));
+}
+
+function msToNextHour() {
+	return Math.abs(moment().diff(moment().endOf("hour").add(2000, "ms"), "ms"));
+}
+
+function toastMessage(chance) {
+	let messages = ["Genius!", "Splendid", "Amazing", "Good", "Nice", "You did it", "Too bad!"];
+	return messages[chance];
+}
+
+function binarySearch(arr, val) {
+	let start = 0;
+	let end = arr.length - 1;
+
+	while (start <= end) {
+		let mid = Math.floor((start + end) / 2);
+
+		if (arr[mid] === val) {
+			return mid;
+		}
+
+		if (val < arr[mid]) {
+			end = mid - 1;
+		} else {
+			start = mid + 1;
+		}
+	}
+	return -1;
+}
+
+function isWordInList(word) {
+	return words.includes(word) || validWords.includes(word);
+}
+
+export { getRandomWord, timeout, evaluate, timeToNextMin, msToNextHour, toastMessage, binarySearch, isWordInList };

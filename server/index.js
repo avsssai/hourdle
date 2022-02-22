@@ -13,6 +13,10 @@ const port = 8000;
 app.use(cors());
 let usedWords = [];
 let newWord = random(wordsList);
+if (!wordsList.length) {
+	wordsList = usedWords;
+	usedWords = [];
+}
 nodeCron.schedule("0 * * * *", function () {
 	newWord = random(wordsList);
 	if (usedWords.includes(newWord)) {

@@ -83,4 +83,22 @@ function isWordInList(word) {
 	return words.includes(word) || validWords.includes(word);
 }
 
-export { getRandomWord, timeout, evaluate, timeToNextMin, msToNextHour, toastMessage, binarySearch, isWordInList };
+function getFromLocalStorage(item) {
+	return JSON.parse(localStorage.getItem(item));
+}
+
+function setToLocalStorage(item, content) {
+	return localStorage.setItem(item, JSON.stringify(content));
+}
+export {
+	getRandomWord,
+	timeout,
+	evaluate,
+	timeToNextMin,
+	msToNextHour,
+	toastMessage,
+	binarySearch,
+	isWordInList,
+	getFromLocalStorage,
+	setToLocalStorage,
+};

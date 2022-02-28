@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { isWordInList, evaluate, msToNextHour, toastMessage } from "../../utils/helpers";
+import { isWordInList, evaluate, msToNextHour, toastMessage, setToLocalStorage } from "../../utils/helpers";
 import GameBoard from "../GameBoard/GameBoard";
 import KeyBoard from "../KeyBoard/KeyBoard";
+import { GameContext } from "../../hooks/GameContext";
+import useStickyState from "../../hooks/useStickyState";
 
-const Game = ({ word }) => {
-	const [boardState, setBoardState] = useState(["", "", "", "", "", ""]);
-	const [rowIndex, setRowIndex] = useState(0);
-	const [evaluations, setEvaluations] = useState(Array(6).fill([]));
-	const [keyboardState, setKeyBoardState] = useState({});
+const initialBoardState = ["", "", "", "", "", ""];
+const Game = ({ word, setGameStats, gameStats }) => {
+	// const [boardState, setBoardState] = useState(["", "", "", "", "", ""]);
+	// const [boardState, setBoardState] = useState(getFromLocalStorage("boardState"));
+	// const [rowIndex, setRowIndex] = useState(0);
+	// const [evaluations, setEvaluations] = useState(() => getFromLocalStorage("evaluations"));
+	// const [keyboardState, setKeyBoardState] = useState({});
 
+	const [boardState, setBoardState] = useStickyState(initialBoardState, "boardState");
+	// const [boardState, setBoardState] = useState(initialBoardState);
+	const [rowIndex, setRowIndex] = useStickyState(0, "rowIndex");
+	const [evaluations, setEvaluations] = useStickyState(Array(6).fill([]), "evaluations");
+	const [keyboardState, setKeyBoardState] = useStickyState({}, "keyboardState");
+
+	const { gameState, setGameState } = useContext(GameContext);
 	function keyboardStatus() {
 		let letters = boardState[rowIndex].slice();
 		let evaluation = evaluate(boardState[rowIndex], word);
@@ -31,6 +42,10 @@ const Game = ({ word }) => {
 		//3. make buttons inactive
 		toast(toastMessage(rowIndex));
 		localStorage.setItem("lastCompletedTS", msToNextHour());
+		setGameState("WIN");
+		const gameStatsCopy = { ...gameStats };
+		gameStatsCopy[rowIndex + 1] = gameStatsCopy[rowIndex + 1] + 1;
+		setGameStats(gameStatsCopy);
 	};
 
 	const enterClick = () => {
@@ -44,11 +59,14 @@ const Game = ({ word }) => {
 			console.log("dne");
 			return;
 		}
+		// localStorage.setItem(JSON.stringify("boardState", boardState));
+		setToLocalStorage("boardState", boardState);
 		// console.log(isWordInList(currentWord));
 		let currentEvaluation = evaluate(boardState[rowIndex], word);
 		let evaluationArr = [...evaluations];
 		evaluationArr[rowIndex] = currentEvaluation;
 		setEvaluations(evaluationArr);
+		setToLocalStorage("evaluations", evaluationArr);
 		setRowIndex(rowIndex + 1);
 		setKeyBoardState(keyboardStatus());
 
@@ -62,7 +80,6 @@ const Game = ({ word }) => {
 	};
 
 	const enterValue = (val) => {
-		console.log(val, "two");
 		if (boardState[rowIndex].length > 6) {
 			return;
 		}

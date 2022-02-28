@@ -1,19 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { HelpCircle, BarChart2, Settings } from "react-feather";
+import Tutorial from "../Modal/Tutorial";
+import Statistics from "../Modal/Statistics";
 
 const Header = () => {
+	const [tutorialOpen, setTutorialOpen] = useState(false);
+	const [statsModalOpen, setStatsModalOpen] = useState(false);
+
+	const handleTutorialOpen = () => setTutorialOpen(true);
+	const handleTutorialDismiss = () => setTutorialOpen(false);
+
+	const handleStatsOpen = () => setStatsModalOpen(true);
+	const handleStatsDismiss = () => setStatsModalOpen(false);
 	return (
 		<HeaderWrapper>
 			<Menu>
-				<HelpCircle color='black' size={24} />
+				<HelpCircle color='black' size={24} onClick={handleTutorialOpen} />
 			</Menu>
 			<Logo>Wordle</Logo>
 
 			<RightMenu>
-				<BarChart2 color='black' size={24} />
+				<BarChart2 color='black' size={24} onClick={handleStatsOpen} />
 				<Settings color='black' size={24} />
 			</RightMenu>
+			<Tutorial isOpen={tutorialOpen} handleDismiss={handleTutorialDismiss} />
+			<Statistics isOpen={statsModalOpen} handleDismiss={handleStatsDismiss} />
 		</HeaderWrapper>
 	);
 };

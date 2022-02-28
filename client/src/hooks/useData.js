@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { msToNextHour } from "../utils/helpers";
+import { msToNextHour, setToLocalStorage } from "../utils/helpers";
 
 function useData() {
 	let [lastPlayedTS, setlastPlayedTS] = useState(JSON.parse(localStorage.getItem("lastPlayedTS")) || null);
@@ -27,12 +27,30 @@ function useData() {
 				.then((res) => res.json())
 				.then((data) => {
 					setWord(data.word);
+
 					return localStorage.setItem("solution", JSON.stringify(data.word));
 				});
 		}, timeTill);
 		return () => clearInterval(interval);
 	}, [timeTill]);
 
+	// let exists = (item) => {
+	// 	if (localStorage.getItem(item)) {
+	// 		JSON.parse(localStorage.getItem(item));
+	// 	} else {
+	// 		return null;
+	// 	}
+	// };
+	// useEffect(() => {
+	// 	if (!exists("game-stats"))
+	// 		localStorage.setItem("game-stats", JSON.stringify({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }));
+
+	// 	if (!exists("wins")) localStorage.setItem("wins", JSON.stringify(0));
+	// 	if (!exists("losses")) localStorage.setItem("losses", JSON.stringify(0));
+	// 	if (!exists("boardState")) localStorage.setItem("boardState", JSON.stringify(["", "", "", "", "", ""]));
+	// 	if (!exists("evaluations")) setToLocalStorage("evaluations", Array(6).fill([]));
+	// 	if (!exists("rowIndex")) setToLocalStorage("rowIndex", 0);
+	// });
 	return [word, timeTill];
 }
 

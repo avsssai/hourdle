@@ -1,22 +1,38 @@
 import React from "react";
+import { DialogContent, DialogOverlay } from "@reach/dialog";
 import styled from "styled-components";
 
-const Modal = () => {
+const MobileBreakpoint = 550;
+
+const Modal = ({ children, isOpen, handleDismiss }) => {
+	// const [openModal, setOpenModal] = useState(true);
 	return (
-		<ModalWrapper>
-			<Header>Statistics</Header>
+		<ModalWrapper isOpen={isOpen} onDismiss={handleDismiss}>
+			<Content aria-label='Tutorial'>{children}</Content>
 		</ModalWrapper>
 	);
 };
 
-const ModalWrapper = styled.div`
-	position: absolute;
-	height: 30%;
-	width: 30%;
-	text-align: center;
-	padding: 10px;
+const ModalWrapper = styled(DialogOverlay)`
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: hsl(0deg 0% 0% / 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `;
-const Header = styled.div`
-	font-size: 24px;
+const Content = styled(DialogContent)`
+	padding: 1rem;
+	background: white;
+	position: relative;
+	border-radius: 10px;
+
+	@media (max-width: ${MobileBreakpoint}px) {
+		width: 80%;
+	}
 `;
+
 export default Modal;

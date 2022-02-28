@@ -8752,6 +8752,7 @@ export const validWords = [
 	"squid",
 	"squit",
 	"squiz",
+	"sruti",
 	"stabs",
 	"stade",
 	"stags",

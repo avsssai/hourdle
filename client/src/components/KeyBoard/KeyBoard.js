@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Delete } from "react-feather";
+import { GameContext } from "../../hooks/GameContext";
 
 const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
+	const { gameState, setGameState } = useContext(GameContext);
+
 	const keyClick = (e) => {
 		enterValue(e.target.value);
 	};
@@ -19,11 +22,23 @@ const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
 		if (keyArr.includes("present")) return "present";
 		if (keyArr.includes("absent")) return "absent";
 	};
+
+	const handleKeyPress = (event) => {
+		if (event.key === "Enter") console.log("clicked enter");
+	};
+
+	const keyDisable = gameState === "WIN";
 	return (
 		<KeyBoardWrapper>
 			<Row>
 				{layout[0].map((el) => (
-					<Button onClick={keyClick} key={el} value={el} keyState={keyState(keyboardState, el)}>
+					<Button
+						onClick={keyClick}
+						key={el}
+						value={el}
+						keyState={keyState(keyboardState, el)}
+						disabled={keyDisable}
+						onKeyPress={handleKeyPress}>
 						{el}
 					</Button>
 				))}
@@ -32,20 +47,32 @@ const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
 				<Spacer />
 
 				{layout[1].map((el) => (
-					<Button onClick={keyClick} key={el} value={el} keyState={keyState(keyboardState, el)}>
+					<Button
+						onClick={keyClick}
+						key={el}
+						value={el}
+						keyState={keyState(keyboardState, el)}
+						disabled={keyDisable}>
 						{el}
 					</Button>
 				))}
 				<Spacer />
 			</Row>
 			<Row>
-				<Button onClick={() => enterClick()}>Enter</Button>
+				<Button onClick={() => enterClick()} disabled={keyDisable}>
+					Enter
+				</Button>
 				{layout[2].map((el) => (
-					<Button onClick={keyClick} key={el} value={el} keyState={keyState(keyboardState, el)}>
+					<Button
+						onClick={keyClick}
+						key={el}
+						value={el}
+						keyState={keyState(keyboardState, el)}
+						disabled={keyDisable}>
 						{el}
 					</Button>
 				))}
-				<Button onClick={() => deleteEntry()}>
+				<Button onClick={() => deleteEntry()} disabled={keyDisable}>
 					<Delete color='black' size={24} />
 				</Button>
 			</Row>

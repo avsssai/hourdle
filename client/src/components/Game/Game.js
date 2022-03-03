@@ -7,22 +7,20 @@ import GameBoard from "../GameBoard/GameBoard";
 import KeyBoard from "../KeyBoard/KeyBoard";
 import { GameContext } from "../../hooks/GameContext";
 import useStickyState from "../../hooks/useStickyState";
+import { UseDataContext } from "../../hooks/useDataProvider";
 
 const initialBoardState = ["", "", "", "", "", ""];
-const Game = ({ word, setGameStats, gameStats }) => {
-	// const [boardState, setBoardState] = useState(["", "", "", "", "", ""]);
-	// const [boardState, setBoardState] = useState(getFromLocalStorage("boardState"));
-	// const [rowIndex, setRowIndex] = useState(0);
-	// const [evaluations, setEvaluations] = useState(() => getFromLocalStorage("evaluations"));
-	// const [keyboardState, setKeyBoardState] = useState({});
+const Game = ({ setGameStats, gameStats }) => {
+	const { word } = useContext(UseDataContext);
 
 	const [boardState, setBoardState] = useStickyState(initialBoardState, "boardState");
-	// const [boardState, setBoardState] = useState(initialBoardState);
+
 	const [rowIndex, setRowIndex] = useStickyState(0, "rowIndex");
 	const [evaluations, setEvaluations] = useStickyState(Array(6).fill([]), "evaluations");
 	const [keyboardState, setKeyBoardState] = useStickyState({}, "keyboardState");
 
 	const { gameState, setGameState } = useContext(GameContext);
+	console.log(gameState);
 	function keyboardStatus() {
 		let letters = boardState[rowIndex].slice();
 		let evaluation = evaluate(boardState[rowIndex], word);

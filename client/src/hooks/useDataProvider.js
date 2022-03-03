@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { msToNextHour, setToLocalStorage } from "../utils/helpers";
 
-function useData() {
-	let [lastPlayedTS, setlastPlayedTS] = useState(JSON.parse(localStorage.getItem("lastPlayedTS")) || null);
-	let [lastCompletedTS, setlastCompletedTS] = useState(JSON.parse(localStorage.getItem("lastCompletedTS")) || null);
-
+export const UseDataContext = React.createContext();
+function UseDataProvider({ children }) {
 	const [word, setWord] = useState(JSON.parse(localStorage.getItem("solution")));
 
 	const [timeTill, setTimeTill] = useState(msToNextHour());
@@ -29,32 +27,24 @@ function useData() {
 					setWord(data.word);
 
 					return localStorage.setItem("solution", JSON.stringify(data.word));
+				})
+				.then(() => {
+					localStorage.removeItem("evaluations");
+					localStorage.removeItem("boardState");
+					localStorage.removeItem("keyboardState");
+					localStorage.removeItem("gameStatus");
+					localStorage.removeItem("rowIndex");
+					window.location.reload();
 				});
 		}, timeTill);
 		return () => clearInterval(interval);
 	}, [timeTill]);
 
-	// let exists = (item) => {
-	// 	if (localStorage.getItem(item)) {
-	// 		JSON.parse(localStorage.getItem(item));
-	// 	} else {
-	// 		return null;
-	// 	}
-	// };
-	// useEffect(() => {
-	// 	if (!exists("game-stats"))
-	// 		localStorage.setItem("game-stats", JSON.stringify({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }));
-
-	// 	if (!exists("wins")) localStorage.setItem("wins", JSON.stringify(0));
-	// 	if (!exists("losses")) localStorage.setItem("losses", JSON.stringify(0));
-	// 	if (!exists("boardState")) localStorage.setItem("boardState", JSON.stringify(["", "", "", "", "", ""]));
-	// 	if (!exists("evaluations")) setToLocalStorage("evaluations", Array(6).fill([]));
-	// 	if (!exists("rowIndex")) setToLocalStorage("rowIndex", 0);
-	// });
-	return [word, timeTill];
+	// return [word, timeTill];
+	return <UseDataContext.Provider value={{ word, timeTill }}>{children}</UseDataContext.Provider>;
 }
 
-export default useData;
+export default UseDataProvider;
 
 // useEffect(() => {
 // 	// const timeUntilNextMin = Math.abs(moment().diff(moment().endOf("minute").add(100, "ms"), "ms"));

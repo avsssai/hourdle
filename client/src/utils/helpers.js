@@ -51,6 +51,7 @@ function timeToNextMin() {
 }
 
 function msToNextHour() {
+	console.log("fired");
 	return Math.abs(moment().diff(moment().endOf("hour").add(2000, "ms"), "ms"));
 }
 

@@ -6,9 +6,9 @@ function UseDataProvider({ children }) {
 	const [word, setWord] = useState(JSON.parse(localStorage.getItem("solution")));
 
 	const [timeTill, setTimeTill] = useState(msToNextHour());
-
+	const URL = process.env.REACT_APP_BACKEND_API || "http://localhost:8000/";
 	useEffect(() => {
-		fetch("http://localhost:8000/")
+		fetch(URL)
 			.then((res) => res.json())
 			.then((data) => {
 				setWord(data.word);
@@ -21,7 +21,7 @@ function UseDataProvider({ children }) {
 			// setTimeTill(msToNextHour());
 			// console.log(timeToNextMin());
 			// setTimeTill(timeToNextMin());
-			fetch("http://localhost:8000/")
+			fetch(URL)
 				.then((res) => res.json())
 				.then((data) => {
 					setWord(data.word);

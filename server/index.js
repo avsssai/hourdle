@@ -9,7 +9,7 @@ const random = (words) => {
 };
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 app.use(cors());
 let usedWords = [];
 let newWord = random(wordsList);

@@ -58,7 +58,7 @@ const Tutorial = ({ isOpen, handleDismiss }) => {
 				</Examples>
 				<SectionDivider />
 
-				<SectionHeader>A new WORDLE will be available each hour!</SectionHeader>
+				<SectionHeader>A new HOURDLE will be available each hour!</SectionHeader>
 			</TutorialWrapper>
 		</Modal>
 	);

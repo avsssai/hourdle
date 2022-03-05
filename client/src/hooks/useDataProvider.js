@@ -17,8 +17,8 @@ function UseDataProvider({ children }) {
 	}, []);
 	useEffect(() => {
 		let interval = setInterval(() => {
-			console.log(msToNextHour(), new Date().getTime());
-			setTimeTill(msToNextHour());
+			// console.log(msToNextHour(), new Date().getTime());
+			// setTimeTill(msToNextHour());
 			// console.log(timeToNextMin());
 			// setTimeTill(timeToNextMin());
 			fetch("http://localhost:8000/")

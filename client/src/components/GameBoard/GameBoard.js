@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import useStickyState from "../../hooks/useStickyState";
-import { getFromLocalStorage } from "../../utils/helpers";
+
 import Cell from "../Cell/Cell";
 
 const GameBoard = ({ word, boardState, evaluations }) => {

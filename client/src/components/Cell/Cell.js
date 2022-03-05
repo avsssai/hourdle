@@ -1,21 +1,25 @@
 import React, { useContext } from "react";
 import styled, { keyframes } from "styled-components";
+import { ThemeContext } from "../../hooks/ThemeContext";
 
 const Cell = ({ entry, evaluation, item }) => {
-	let borderColor = entry ? "#1A1A1B" : "#D3D6DA";
+	const { currentTheme } = useContext(ThemeContext);
+	let borderColor = entry ? currentTheme.activeBorderColor : currentTheme.borderColor;
 	let background = !evaluation
-		? "white"
+		? currentTheme.background
 		: evaluation === "correct"
-		? "green"
+		? currentTheme.correct
 		: evaluation === "present"
-		? "yellow"
-		: "gray";
-
+		? currentTheme.present
+		: currentTheme.absent;
+	let completedBorderColor = currentTheme.completedBorderColor;
+	let color = currentTheme.color;
 	if (!evaluation) {
 		return (
 			<GameCell
 				style={{
 					"--borderColor": borderColor,
+					"--color": color,
 				}}>
 				{entry ? entry : ""}
 			</GameCell>
@@ -27,6 +31,7 @@ const Cell = ({ entry, evaluation, item }) => {
 					"--borderColor": borderColor,
 					"--backgroundColor": background,
 					"--timeout": `${item * 100}ms`,
+					"--completedBorderColor": completedBorderColor,
 				}}>
 				{entry ? entry : ""}
 			</Rotate>
@@ -48,7 +53,8 @@ const GameCell = styled.div`
 	font-weight: 800;
 	font-family: "Clear Sans", "Segoe UI", Tahoma, Geneva, Verdana, Arial, sans-serif;
 	/* background: var(--backgroundColor); */
-	background: white;
+	background: var(--background);
+	color: var(--color);
 `;
 
 const rotate = keyframes`
@@ -65,6 +71,9 @@ const Rotate = styled(GameCell)`
 	/* display: inline-block; */
 	animation: ${rotate} var(--timeout) ease-in;
 	background: var(--backgroundColor);
+	color: white;
+	border-color: var(--completedBorderColor);
+
 	/* padding: 2rem 1rem; */
 	/* font-size: 1.2rem; */
 `;

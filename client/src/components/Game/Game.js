@@ -1,8 +1,15 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { isWordInList, evaluate, msToNextHour, toastMessage, setToLocalStorage } from "../../utils/helpers";
+import {
+	isWordInList,
+	evaluate,
+	msToNextHour,
+	toastMessage,
+	setToLocalStorage,
+	clipboardContent,
+} from "../../utils/helpers";
 import GameBoard from "../GameBoard/GameBoard";
 import KeyBoard from "../KeyBoard/KeyBoard";
 import { GameContext } from "../../hooks/GameContext";
@@ -10,17 +17,26 @@ import useStickyState from "../../hooks/useStickyState";
 import { UseDataContext } from "../../hooks/useDataProvider";
 
 const initialBoardState = ["", "", "", "", "", ""];
-const Game = ({ setGameStats, gameStats }) => {
+const Game = ({ setGameStats, gameStats, currentTheme }) => {
 	const { word } = useContext(UseDataContext);
-
 	const [boardState, setBoardState] = useStickyState(initialBoardState, "boardState");
 
 	const [rowIndex, setRowIndex] = useStickyState(0, "rowIndex");
 	const [evaluations, setEvaluations] = useStickyState(Array(6).fill([]), "evaluations");
 	const [keyboardState, setKeyBoardState] = useStickyState({}, "keyboardState");
 
-	const { gameState, setGameState } = useContext(GameContext);
-	console.log(gameState);
+	const { setGameState, setStatsModalOpen } = useContext(GameContext);
+
+	useEffect(() => {
+		if (rowIndex > 5) {
+			toast(word);
+			setGameState("LOSS");
+			const gameStatsCopy = { ...gameStats };
+			gameStatsCopy["losses"] = gameStatsCopy["losses"] + 1;
+			setGameStats(gameStatsCopy);
+			setTimeout(() => setStatsModalOpen(true), 2500);
+		}
+	}, [rowIndex]);
 	function keyboardStatus() {
 		let letters = boardState[rowIndex].slice();
 		let evaluation = evaluate(boardState[rowIndex], word);
@@ -43,18 +59,19 @@ const Game = ({ setGameStats, gameStats }) => {
 		setGameState("WIN");
 		const gameStatsCopy = { ...gameStats };
 		gameStatsCopy[rowIndex + 1] = gameStatsCopy[rowIndex + 1] + 1;
+		gameStatsCopy["wins"] = gameStatsCopy["wins"] + 1;
 		setGameStats(gameStatsCopy);
+		setTimeout(() => setStatsModalOpen(true), 2500);
 	};
 
 	const enterClick = () => {
-		console.log(evaluate(boardState[rowIndex], word));
-		console.log("BOARD STATE", boardState);
+		// console.log(evaluate(boardState[rowIndex], word));
+		// console.log("BOARD STATE", boardState);
 		const currentWord = boardState[rowIndex];
 		if (currentWord.length < 5) return;
 
 		if (!isWordInList(currentWord)) {
 			toast("Not in word list");
-			console.log("dne");
 			return;
 		}
 		// localStorage.setItem(JSON.stringify("boardState", boardState));
@@ -67,6 +84,7 @@ const Game = ({ setGameStats, gameStats }) => {
 		setToLocalStorage("evaluations", evaluationArr);
 		setRowIndex(rowIndex + 1);
 		setKeyBoardState(keyboardStatus());
+		// console.log(clipboardContent(evaluations));
 
 		if (currentWord === word) {
 			correctGuessLogic();
@@ -74,6 +92,11 @@ const Game = ({ setGameStats, gameStats }) => {
 
 		if (rowIndex > 5) {
 			toast(toastMessage[rowIndex]);
+			setGameState("LOSS");
+			const gameStatsCopy = { ...gameStats };
+			gameStatsCopy["losses"] = gameStatsCopy["losses"] + 1;
+			setGameStats(gameStatsCopy);
+			setTimeout(() => setStatsModalOpen(true), 2500);
 		}
 	};
 
@@ -106,6 +129,7 @@ const Game = ({ setGameStats, gameStats }) => {
 				boardState={boardState}
 				evaluations={evaluations}
 				keyboardState={keyboardState}
+				currentTheme={currentTheme}
 			/>
 			<ToastContainer
 				position='top-center'
@@ -117,7 +141,7 @@ const Game = ({ setGameStats, gameStats }) => {
 				pauseOnFocusLoss
 				draggable
 				pauseOnHover={false}
-				theme='dark'
+				theme={currentTheme.theme}
 			/>
 		</GameWrapper>
 	);

@@ -51,7 +51,7 @@ function timeToNextMin() {
 }
 
 function msToNextHour() {
-	console.log("fired");
+	// console.log("fired");
 	return Math.abs(moment().diff(moment().endOf("hour").add(2000, "ms"), "ms"));
 }
 
@@ -91,6 +91,30 @@ function getFromLocalStorage(item) {
 function setToLocalStorage(item, content) {
 	return localStorage.setItem(item, JSON.stringify(content));
 }
+
+function clipboardContent(boardArray) {
+	let result = "";
+	if (!boardArray) return;
+	for (let arr of boardArray) {
+		if (arr.length) {
+			for (let i = 0; i < arr.length; i++) {
+				if (arr[i] === "correct") {
+					result = result + "🟩";
+				} else if (arr[i] === "present") {
+					result = result + "🟨";
+				} else {
+					result = result + "⬛";
+				}
+			}
+			result = result + "\n";
+		}
+	}
+	let chance = getFromLocalStorage("rowIndex");
+	let winStatus = getFromLocalStorage("gameStatus");
+	let counter = winStatus === "LOSS" ? "X" : chance;
+	let resultPlusDate = result + `\n Hourdle ${moment().format("LL")} ${moment().hours()} ${counter}/6`;
+	return resultPlusDate;
+}
 export {
 	getRandomWord,
 	timeout,
@@ -102,4 +126,5 @@ export {
 	isWordInList,
 	getFromLocalStorage,
 	setToLocalStorage,
+	clipboardContent,
 };

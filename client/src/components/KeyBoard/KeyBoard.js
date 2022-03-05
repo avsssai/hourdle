@@ -2,10 +2,15 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import { Delete } from "react-feather";
 import { GameContext } from "../../hooks/GameContext";
+import useKeyPress from "../../hooks/useKeyPress";
+import { ThemeContext } from "../../hooks/ThemeContext";
 
 const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
-	const { gameState, setGameState } = useContext(GameContext);
+	const { gameState } = useContext(GameContext);
+	const { currentTheme } = useContext(ThemeContext);
 
+	const enterPress = useKeyPress("q");
+	// console.log(enterPress);
 	const keyClick = (e) => {
 		enterValue(e.target.value);
 	};
@@ -24,12 +29,16 @@ const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
 	};
 
 	const handleKeyPress = (event) => {
-		if (event.key === "Enter") console.log("clicked enter");
+		console.log(event);
 	};
 
-	const keyDisable = gameState === "WIN";
+	const keyDisable = gameState === "WIN" || gameState === "LOSS";
+
 	return (
-		<KeyBoardWrapper>
+		<KeyBoardWrapper
+			onKeyPress={handleKeyPress}
+			tabIndex={-1}
+			style={{ "--background": currentTheme.keyBackground, "--theme": currentTheme.theme }}>
 			<Row>
 				{layout[0].map((el) => (
 					<Button
@@ -38,7 +47,9 @@ const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
 						value={el}
 						keyState={keyState(keyboardState, el)}
 						disabled={keyDisable}
-						onKeyPress={handleKeyPress}>
+						onKeyDown={handleKeyPress}
+						currentTheme={currentTheme}
+						theme={currentTheme.theme}>
 						{el}
 					</Button>
 				))}
@@ -52,14 +63,20 @@ const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
 						key={el}
 						value={el}
 						keyState={keyState(keyboardState, el)}
-						disabled={keyDisable}>
+						disabled={keyDisable}
+						currentTheme={currentTheme}
+						theme={currentTheme.theme}>
 						{el}
 					</Button>
 				))}
 				<Spacer />
 			</Row>
 			<Row>
-				<Button onClick={() => enterClick()} disabled={keyDisable}>
+				<Button
+					onClick={() => enterClick()}
+					disabled={keyDisable}
+					currentTheme={currentTheme}
+					theme={currentTheme.theme}>
 					Enter
 				</Button>
 				{layout[2].map((el) => (
@@ -68,12 +85,19 @@ const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
 						key={el}
 						value={el}
 						keyState={keyState(keyboardState, el)}
-						disabled={keyDisable}>
+						disabled={keyDisable}
+						onKeyPress={handleKeyPress}
+						currentTheme={currentTheme}
+						theme={currentTheme.theme}>
 						{el}
 					</Button>
 				))}
-				<Button onClick={() => deleteEntry()} disabled={keyDisable}>
-					<Delete color='black' size={24} />
+				<Button
+					onClick={() => deleteEntry()}
+					disabled={keyDisable}
+					currentTheme={currentTheme}
+					theme={currentTheme.theme}>
+					<Delete color={currentTheme.theme === "light" ? "black" : "white"} size={24} />
 				</Button>
 			</Row>
 		</KeyBoardWrapper>
@@ -86,6 +110,7 @@ const KeyBoardWrapper = styled.div`
 	width: 100%;
 	flex: 1;
 	gap: 5px;
+	padding: 8px;
 	margin: 16px 0;
 `;
 const Row = styled.div`
@@ -99,14 +124,20 @@ const Button = styled.button`
 	flex: 1;
 	align-items: center;
 	justify-content: center;
+	background: var(--background);
 	background: ${(p) =>
 		p.keyState === "correct"
-			? "green"
+			? p.currentTheme.correct
 			: p.keyState === "present"
-			? "yellow"
+			? p.currentTheme.present
 			: p.keyState === "absent"
-			? "gray"
-			: "#d3d6da"};
+			? p.currentTheme.absent
+			: null};
+	color: ${(p) =>
+		p.keyState === "correct" || p.keyState === "present" || p.keyState === "absent" || p.theme === "dark"
+			? "white"
+			: "black"};
+
 	// background: #d3d6da;
 	border: none;
 	border-radius: 5px;

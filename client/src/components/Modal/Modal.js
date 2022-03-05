@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { DialogContent, DialogOverlay } from "@reach/dialog";
 import styled from "styled-components";
-
+import { ThemeContext } from "../../hooks/ThemeContext";
 const MobileBreakpoint = 550;
 
 const Modal = ({ children, isOpen, handleDismiss }) => {
 	// const [openModal, setOpenModal] = useState(true);
+	const { currentTheme } = useContext(ThemeContext);
 	return (
 		<ModalWrapper isOpen={isOpen} onDismiss={handleDismiss}>
-			<Content aria-label='Tutorial'>{children}</Content>
+			<Content aria-label='Tutorial' theme={currentTheme}>
+				{children}
+			</Content>
 		</ModalWrapper>
 	);
 };
@@ -26,7 +29,8 @@ const ModalWrapper = styled(DialogOverlay)`
 `;
 const Content = styled(DialogContent)`
 	padding: 1rem;
-	background: white;
+	background: ${(p) => p.theme.background};
+	color: ${(p) => p.theme.foreground};
 	position: relative;
 	border-radius: 10px;
 

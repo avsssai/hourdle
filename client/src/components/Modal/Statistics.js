@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { X, Share } from "react-feather";
 import styled from "styled-components";
-import { clipboardContent } from "../../utils/helpers";
+import { clipboardContent, getFromLocalStorage } from "../../utils/helpers";
 import Chart from "../Chart/Chart";
 import Timer from "../Timer/Timer";
 import Modal from "./Modal";

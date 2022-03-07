@@ -94,7 +94,7 @@ const Game = ({ setGameStats, gameStats, currentTheme }) => {
 	};
 
 	const enterValue = (val) => {
-		if (boardState[rowIndex].length > 6) {
+		if (boardState[rowIndex].length >= 5) {
 			return;
 		}
 		let term = boardState[rowIndex] + val;

@@ -5,6 +5,7 @@ import Tutorial from "../Modal/Tutorial";
 import Statistics from "../Modal/Statistics";
 import { GameContext } from "../../hooks/GameContext";
 import { ThemeContext } from "../../hooks/ThemeContext";
+import { getFromLocalStorage } from "../../utils/helpers";
 
 const Header = ({ gameStats }) => {
 	const { statsModalOpen, setStatsModalOpen, firstTimeLaunch, setFirstTimeLaunch } = useContext(GameContext);
@@ -29,6 +30,10 @@ const Header = ({ gameStats }) => {
 			return setIsDarkTheme(false);
 		}
 	};
+
+	useEffect(() => {
+		if (getFromLocalStorage("gameStatus") === "IN_PROGRESS") handleStatsDismiss();
+	}, []);
 
 	return (
 		<HeaderWrapper>

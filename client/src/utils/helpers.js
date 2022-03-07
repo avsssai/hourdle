@@ -115,6 +115,20 @@ function clipboardContent(boardArray) {
 	let resultPlusDate = result + `\n Hourdle ${moment().format("LL")} ${moment().hours()} ${counter}/6`;
 	return resultPlusDate;
 }
+
+const getWordOfHour = (WORDS) => {
+	// January 1, 2022 Game Epoch
+	let epochMs = new Date(2022, 2, 7).valueOf();
+	const now = Date.now();
+	// const msInDay = 86400000;
+	const msInHr = 3600000;
+	// const index = Math.floor((now - epochMs) / msInDay)
+	const index = Math.floor((now - epochMs) / msInHr);
+	// const nextday = (index + 1) * msInDay + epochMs
+	// const nextday = (index + 1) * msInHr + epochMs;
+	return WORDS[index % WORDS.length];
+};
+
 export {
 	getRandomWord,
 	timeout,
@@ -127,4 +141,5 @@ export {
 	getFromLocalStorage,
 	setToLocalStorage,
 	clipboardContent,
+	getWordOfHour,
 };

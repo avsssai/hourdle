@@ -1,41 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { msToNextHour, setToLocalStorage, getFromLocalStorage } from "../utils/helpers";
+import { words } from "../assets/words";
+import { msToNextHour, setToLocalStorage, getFromLocalStorage, getWordOfHour } from "../utils/helpers";
 
 export const UseDataContext = React.createContext();
 function UseDataProvider({ children }) {
 	const [word, setWord] = useState(JSON.parse(localStorage.getItem("solution")));
 
 	const [timeTill, setTimeTill] = useState(msToNextHour());
-	const URL = process.env.REACT_APP_BACKEND_API || "http://localhost:8000/";
+
 	useEffect(() => {
-		fetch(URL)
-			.then((res) => res.json())
-			.then((data) => {
-				setWord(data.word);
-				localStorage.setItem("solution", JSON.stringify(data.word));
-			});
+		// fetch(URL)
+		// 	.then((res) => res.json())
+		// 	.then((data) => {
+		// 		setWord(data.word);
+		// 		localStorage.setItem("solution", JSON.stringify(data.word));
+		// 	});
+		let word = getWordOfHour(words);
+		setWord(word);
+		localStorage.setItem("solution", JSON.stringify(word));
 	}, []);
 	useEffect(() => {
 		let interval = setInterval(() => {
-			// console.log(msToNextHour(), new Date().getTime());
-			// setTimeTill(msToNextHour());
-			// console.log(timeToNextMin());
-			// setTimeTill(timeToNextMin());
-			fetch(URL)
-				.then((res) => res.json())
-				.then((data) => {
-					setWord(data.word);
-					return localStorage.setItem("solution", JSON.stringify(data.word));
-				})
-				.then(() => {
-					localStorage.removeItem("evaluations");
-					localStorage.removeItem("boardState");
-					localStorage.removeItem("keyboardState");
-					localStorage.removeItem("gameStatus");
-					localStorage.removeItem("rowIndex");
-					localStorage.setItem("gameStatus", "IN_PROGRESS");
-					window.location.reload();
-				});
+			// fetch(URL)
+			// 	.then((res) => res.json())
+			// 	.then((data) => {
+			// 		setWord(data.word);
+			// 		return localStorage.setItem("solution", JSON.stringify(data.word));
+			// 	})
+			// 	.then(() => {
+			// 		localStorage.removeItem("evaluations");
+			// 		localStorage.removeItem("boardState");
+			// 		localStorage.removeItem("keyboardState");
+			// 		localStorage.removeItem("gameStatus");
+			// 		localStorage.removeItem("rowIndex");
+			// 		localStorage.setItem("gameStatus", "IN_PROGRESS");
+			// 		window.location.reload();
+			// 	});
+
+			let word = getWordOfHour(words);
+			setWord(word);
+			localStorage.setItem("solution", JSON.stringify(word));
+
+			localStorage.removeItem("evaluations");
+			localStorage.removeItem("boardState");
+			localStorage.removeItem("keyboardState");
+			localStorage.removeItem("gameStatus");
+			localStorage.removeItem("rowIndex");
+			setToLocalStorage("gameStatus", "IN_PROGRESS");
+			window.location.reload();
 		}, timeTill);
 		return () => clearInterval(interval);
 	}, [timeTill]);

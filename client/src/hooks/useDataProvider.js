@@ -65,6 +65,7 @@ function UseDataProvider({ children }) {
 				localStorage.removeItem("keyboardState");
 				localStorage.removeItem("gameStatus");
 				localStorage.removeItem("rowIndex");
+				setToLocalStorage("gameStatus", "IN_PROGRESS");
 				window.location.reload();
 				let newExpiryTime = timeNow + msToNextHour();
 				setToLocalStorage("gameResetTime", newExpiryTime);

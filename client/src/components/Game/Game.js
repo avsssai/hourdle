@@ -2,14 +2,7 @@ import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-	isWordInList,
-	evaluate,
-	msToNextHour,
-	toastMessage,
-	setToLocalStorage,
-	clipboardContent,
-} from "../../utils/helpers";
+import { isWordInList, evaluate, msToNextHour, toastMessage, setToLocalStorage } from "../../utils/helpers";
 import GameBoard from "../GameBoard/GameBoard";
 import KeyBoard from "../KeyBoard/KeyBoard";
 import { GameContext } from "../../hooks/GameContext";

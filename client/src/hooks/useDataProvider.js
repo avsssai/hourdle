@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { msToNextHour, setToLocalStorage } from "../utils/helpers";
+import { msToNextHour, setToLocalStorage, getFromLocalStorage } from "../utils/helpers";
 
 export const UseDataContext = React.createContext();
 function UseDataProvider({ children }) {
@@ -25,7 +25,6 @@ function UseDataProvider({ children }) {
 				.then((res) => res.json())
 				.then((data) => {
 					setWord(data.word);
-
 					return localStorage.setItem("solution", JSON.stringify(data.word));
 				})
 				.then(() => {
@@ -34,11 +33,32 @@ function UseDataProvider({ children }) {
 					localStorage.removeItem("keyboardState");
 					localStorage.removeItem("gameStatus");
 					localStorage.removeItem("rowIndex");
+					localStorage.setItem("gameStatus", "IN_PROGRESS");
 					window.location.reload();
 				});
 		}, timeTill);
 		return () => clearInterval(interval);
 	}, [timeTill]);
+
+	useEffect(() => {
+		const expiryTime = getFromLocalStorage("gameResetTime");
+		let timeNow = Date.now();
+		let timeToNextExpiry = timeNow + msToNextHour();
+		if (!expiryTime) setToLocalStorage("gameResetTime", timeToNextExpiry);
+
+		if (expiryTime) {
+			if (expiryTime < timeNow) {
+				localStorage.removeItem("evaluations");
+				localStorage.removeItem("boardState");
+				localStorage.removeItem("keyboardState");
+				localStorage.removeItem("gameStatus");
+				localStorage.removeItem("rowIndex");
+				window.location.reload();
+				let newExpiryTime = timeNow + msToNextHour();
+				setToLocalStorage("gameResetTime", newExpiryTime);
+			}
+		}
+	}, []);
 
 	// return [word, timeTill];
 	return <UseDataContext.Provider value={{ word, timeTill }}>{children}</UseDataContext.Provider>;

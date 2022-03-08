@@ -129,6 +129,18 @@ const getWordOfHour = (WORDS) => {
 	return WORDS[index % WORDS.length];
 };
 
+const currentDefaultGameStatus = () => {
+	const expiryTime = getFromLocalStorage("gameResetTime");
+	let timeNow = Date.now();
+	if (expiryTime) {
+		console.log(expiryTime, timeNow, expiryTime < timeNow);
+		if (expiryTime < timeNow) {
+			return "IN_PROGRESS";
+		}
+	}
+	return "IN_PROGRESS";
+};
+
 export {
 	getRandomWord,
 	timeout,
@@ -142,4 +154,5 @@ export {
 	setToLocalStorage,
 	clipboardContent,
 	getWordOfHour,
+	currentDefaultGameStatus,
 };

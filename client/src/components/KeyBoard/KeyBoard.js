@@ -1,14 +1,25 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { Delete } from "react-feather";
 import { GameContext } from "../../hooks/GameContext";
 import useKeyPress from "../../hooks/useKeyPress";
 import { ThemeContext } from "../../hooks/ThemeContext";
+import { getFromLocalStorage } from "../../utils/helpers";
 
 const KeyBoard = ({ enterValue, deleteEntry, enterClick, keyboardState }) => {
-	const { gameState } = useContext(GameContext);
+	const { gameState, setGameState } = useContext(GameContext);
 	const { currentTheme } = useContext(ThemeContext);
-
+	useEffect(() => {
+		const expiryTime = getFromLocalStorage("gameResetTime");
+		let timeNow = Date.now();
+		if (expiryTime) {
+			console.log(expiryTime, timeNow, expiryTime < timeNow);
+			if (expiryTime < timeNow) {
+				setGameState("IN_PROGRESS");
+				console.log("fired");
+			}
+		}
+	}, []);
 	const enterPress = useKeyPress("q");
 	// console.log(enterPress);
 	const keyClick = (e) => {

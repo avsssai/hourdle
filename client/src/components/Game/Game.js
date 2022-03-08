@@ -148,7 +148,6 @@ const GameWrapper = styled.div`
 	height: 100%;
 	align-content: center;
 	margin: 1rem auto;
-
 	@media (min-width: 500px) {
 		max-width: 350px;
 	}
